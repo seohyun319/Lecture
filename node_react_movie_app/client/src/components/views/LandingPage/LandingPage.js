@@ -10,6 +10,7 @@ function LandingPage() {
 
     const [Movies, setMovies] = useState([])
     const [MainMovieImage, setMainMovieImage] = useState(null)
+    const [CurrentPage, setCurrentPage] = useState(0)
 
     useEffect(() => {
         const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
@@ -23,9 +24,17 @@ function LandingPage() {
             .then(response => response.json())
             .then(response => {
                 console.log(response)
-                setMovies([...response.results])
+                setMovies([...Movies, ...response.results])  //...response.results만 있으면 덮어씌움. ...movies 넣어서 기존에 있던 애에 추가되게 만듦. 
                 setMainMovieImage(response.results[0])
+                setCurrentPage(response.page) //현재 페이지 정보 넣어줌 
             })
+    }
+
+    const loadMoreItems = () => {
+
+        const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${CurrentPage + 1}`;
+        fetchMovies(endpoint)
+
     }
 
 
