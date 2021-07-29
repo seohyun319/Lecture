@@ -49,6 +49,21 @@ function LandingPage() {
 
                 {/* Movie Grid Cards */}
 
+                <Row gutter={[16, 16]} > {/*gutter은 상하좌우 여백*/}
+
+                    {Movies && Movies.map((movie, index) => (
+                        <React.Fragment key={index}>
+                            <GridCards
+                                landingPage
+                                image={movie.poster_path ?   //만약 포스터가 있으면 
+                                    `${IMAGE_BASE_URL}w500${movie.poster_path}` : null}   /*앞에 거, 없으면 null*/
+                                movieId={movie.id}
+                                movieName={movie.original_title}
+                            />
+                        </React.Fragment>
+                    ))}
+
+                </Row>
 
             </div>
 
