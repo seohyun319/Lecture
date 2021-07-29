@@ -14,7 +14,7 @@ function GridCards(props) {
                 </div>
             </Col>
         )
-    } else {
+    } else { //actor 부분
         return (
             <Col lg={6} md={8} xs={24}>
                 <div style={{ position: 'relative' }}>
