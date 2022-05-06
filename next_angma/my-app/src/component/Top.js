@@ -1,3 +1,4 @@
+import { Header } from "semantic-ui-react";
 import Gnb from "./Gnb";
 
 export default function Top() {
@@ -11,6 +12,7 @@ export default function Top() {
             style={{ display: "block", width: 80 }}
           />
         </div>
+        <Header as="h1">서혀닝</Header>
       </div>
       <Gnb />
     </div>

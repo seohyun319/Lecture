@@ -1,22 +1,43 @@
+import Axios from "axios";
 import Head from "next/head";
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import { Divider, Header } from "semantic-ui-react";
+import ItemList from "../src/component/ItemList";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
+  const [list, setList] = useState([]);
+  const API_URL =
+    "http://makeup-api.herokuapp.com/api/v1/products.json?brand=maybelline";
+
+  function getData() {
+    Axios.get(API_URL).then((res) => {
+      console.log(res.data);
+      setList(res.data);
+    });
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div>
       <Head>
         <title>HOME</title>
       </Head>
-      create-next-app 으로 설치하면 <br />
-      1. 컴파일과 번들링이 자동으로 됨 (webpack 과 babel)
-      <br />
-      2. 자동 리프레쉬 기능으로 수정하면 화면에 바로 반영
-      <br />
-      3. 서버사이드 렌더링 지원
-      <br />
-      4. 스태틱(정적) 파일 지원
-      <br />
+      <Header as="h3" style={{ paddingTop: 40 }}>
+        베스트 상품
+      </Header>
+      <Divider />
+      {/* slice로 0부터 9까지 */}
+      <ItemList list={list.slice(0, 9)} />
+      <Header as="h3" style={{ paddingTop: 40 }}>
+        신상품
+      </Header>
+      <Divider />
+      {/* 9부터 나머지 */}
+      <ItemList list={list.slice(9)} />
     </div>
   );
 }
