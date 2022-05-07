@@ -1,33 +1,39 @@
 import Axios from "axios";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Head from "next/head";
 import Item from "../../src/component/Item";
 
-const Post = () => {
-  // 라우터
-  const router = useRouter();
-  // [id].js로 파일 만들어줬을 때 라우터에 {id}값 아무거나 들어오면 여기로 라우팅됨.
-  const { id } = router.query;
-
-  const [item, setItem] = useState({});
-
-  const API_URL = `http://makeup-api.herokuapp.com/api/v1/products/${id}.json`;
-
-  function getData() {
-    Axios.get(API_URL).then((res) => {
-      setItem(res.data);
-    });
-  }
-
-  useEffect(() => {
-    // id가 있고 0보다 클 경우
-    if (id && id > 0) {
-      getData();
-    }
-  }, [id]);
-
-  // return <p>Post: {id}</p>
-  return <Item item={item} />;
+// getServerSideProps의 응답값 item을 Post 페이지에 props로 넘겨줄 수 있음.
+const Post = ({ item }) => {
+  return (
+    <>
+      {item && (
+        <>
+          {/* Head에 title이랑 meta 데이터 넣어주면 SEO가 읽을 수 있음. */}
+          <Head>
+            <title>{item.name}</title>
+            <meta name="description" content={item.description}></meta>
+          </Head>
+          <Item item={item} />
+        </>
+      )}
+    </>
+  );
 };
 
 export default Post;
+
+// context에는 prams, 요청, 응답 쿼리 등이 담겨서 옴.
+export async function getServerSideProps(context) {
+  const id = context.params.id;
+  const apiUrl = `http://makeup-api.herokuapp.com/api/v1/products/${id}.json`;
+  // id와 api 호출하고 받아온 응답값을
+  const res = await Axios.get(apiUrl);
+  const data = res.data;
+
+  return {
+    props: {
+      // item에 넣어줌
+      item: data,
+    },
+  };
+}
