@@ -1,8 +1,23 @@
 import Axios from "axios";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { Loader } from "semantic-ui-react";
 import Item from "../../src/component/Item";
 
 const Post = ({ item, name }) => {
+  const router = useRouter();
+
+  // isFallback 상태면 로더 보여줌
+  if (router.isFallback) {
+    return (
+      <div style={{ padding: "100px 0" }}>
+        <Loader active inline="centered">
+          Loading
+        </Loader>
+      </div>
+    );
+  }
+
   return (
     <>
       {item && (
@@ -22,12 +37,17 @@ const Post = ({ item, name }) => {
 export default Post;
 
 export async function getStaticPaths() {
+  const apiUrl = process.env.apiUrl;
+  const res = await Axios.get(apiUrl);
+  const data = res.data;
+
   return {
-    paths: [
-      { params: { id: "740" } },
-      { params: { id: "730" } },
-      { params: { id: "729" } },
-    ],
+    // 실제로는 api 요청해오는 게 현실적.
+    paths: data.slice(0, 9).map((item) => ({
+      params: {
+        id: item.id.toString(),
+      },
+    })),
     // fallback: true면 getStaticProps로 전달된 경로들은 빌드 타임에 만들어지는 것.
     // 나머지는 최초 접속 시 빈 화면으로 보여지게 되고 이외 백그라운드에서 정적 파일로 html과 json 생성해줌.
     // next.js는 프리렌더링 목록에 추가함.
