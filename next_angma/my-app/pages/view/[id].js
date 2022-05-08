@@ -3,7 +3,7 @@ import Head from "next/head";
 import Item from "../../src/component/Item";
 
 // getServerSideProps의 응답값 item을 Post 페이지에 props로 넘겨줄 수 있음.
-const Post = ({ item }) => {
+const Post = ({ item, name }) => {
   return (
     <>
       {item && (
@@ -13,6 +13,7 @@ const Post = ({ item }) => {
             <title>{item.name}</title>
             <meta name="description" content={item.description}></meta>
           </Head>
+          {name} 환경 입니다.
           <Item item={item} />
         </>
       )}
@@ -34,6 +35,7 @@ export async function getServerSideProps(context) {
     props: {
       // item에 넣어줌
       item: data,
+      name: process.env.name,
     },
   };
 }
