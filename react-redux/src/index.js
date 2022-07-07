@@ -8,8 +8,15 @@ const number = document.querySelector("span");
 // reducer(Modifier)가 return하는 건 application의 data가 됨
 // 인자로 state를 받고, 수정된 state return
 // count=0 : count의 defaultState는 0
-const countModifier = (count = 0) => {
-  return count;
+const countModifier = (count = 0, action) => {
+  console.log(count, action);
+  if (action.type === "ADD") {
+    return count + 1;
+  } else if (action.type === "MINUS") {
+    return count - 1;
+  } else {
+    return count;
+  }
 };
 
 // store: state를 넣는 곳
@@ -17,5 +24,14 @@ const countModifier = (count = 0) => {
 // store 만들면 안에 reducer 넣어야함
 // createStore(reducer);
 const countStore = createStore(countModifier);
+
+// dispatch: reducer에게 특정 동작 하라고 action 보냄.
+// dispatch 인자에 action 넘김.
+countStore.dispatch({ type: "ADD" }); // action은 {type: "ADD"}
+countStore.dispatch({ type: "ADD" });
+countStore.dispatch({ type: "ADD" });
+countStore.dispatch({ type: "ADD" });
+countStore.dispatch({ type: "ADD" });
+countStore.dispatch({ type: "MINUS" });
 
 console.log(countStore.getState());
