@@ -18,15 +18,4 @@ function Detail() {
   );
 }
 
-// // ownProps하면 useParams로 id 안 받아와도 됨.
-// function mapStateToProps(state, ownProps) {
-//   const {
-//     match: {
-//       params: { id },
-//     },
-//   } = ownProps;
-//   return { toDo: state.find((toDo) => toDo.id === parseInt(id)) };
-// }
-
-// export default connect(mapStateToProps)(Detail);
 export default Detail;

@@ -3,11 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { deleteToDo } from "../store";
 
-function ToDo({
-  text,
-  id,
-  // , onBtnClick
-}) {
+function ToDo({ text, id }) {
   const dispatch = useDispatch();
 
   const onClick = () => {
@@ -23,11 +19,4 @@ function ToDo({
   );
 }
 
-// function mapDispatchToProps(dispatch, ownProps) {
-//   return {
-//     onBtnClick: () => dispatch(actionCreators.deleteToDo(ownProps.id)),
-//   };
-// }
-
-// export default connect(null, mapDispatchToProps)(ToDo);
 export default ToDo;
