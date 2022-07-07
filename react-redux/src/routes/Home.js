@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ToDo from "../components/ToDo";
-import { addToDo } from "../store";
+import { add } from "../store";
 
 function Home() {
   const [text, setText] = useState("");
@@ -18,7 +18,7 @@ function Home() {
   function onSubmit(e) {
     e.preventDefault();
     // dispatch로 reducer에게 addToDo하는 동작 호출
-    dispatch(addToDo(text));
+    dispatch(add(text));
     setText("");
   }
 
