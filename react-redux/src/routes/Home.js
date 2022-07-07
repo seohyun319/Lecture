@@ -1,17 +1,26 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { actionCreators } from "../store";
+import { useSelector, useDispatch } from "react-redux";
+import { addToDo } from "../store";
 
-function Home({ toDos, addToDo }) {
+function Home() {
   const [text, setText] = useState("");
   function onChange(e) {
     setText(e.target.value);
   }
+
+  // useSelector()은 getState랑 같은 기능. (store에서 정보를 가져옴)
+  // mapStateToProps() 대체
+  const toDos = useSelector((state) => state);
+  // useDispatch()는 mapDispatchToProps() 대체
+  const dispatch = useDispatch();
+
   function onSubmit(e) {
     e.preventDefault();
-    addToDo(text);
+    // dispatch로 reducer에게 addToDo하는 동작 호출
+    dispatch(addToDo(text));
     setText("");
   }
+
   return (
     <>
       <h1>To Do</h1>
@@ -24,23 +33,4 @@ function Home({ toDos, addToDo }) {
   );
 }
 
-// mapStateToProps(state, ownProps?)
-function mapStateToProps(state) {
-  return { toDos: state };
-}
-
-// mapDispatchToProps(dispatch, ownProps?)
-// Home에서 props 바꿀 수 있음.
-function mapDispatchToProps(dispatch) {
-  return {
-    // addToDo는 dispatch 호출
-    // dispatch는 actionCreators 호출
-    addToDo: (text) => dispatch(actionCreators.addToDo(text)),
-  };
-}
-
-// connect: component를 store에 연결해줌.
-// connect(state)(dispatch)
-// mapStateToProps로 store에서 받아온 state를 component Home과 함께 가져옴
-// redux state로부터 home component에 prop으로 전달
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;
