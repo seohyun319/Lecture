@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:jest-dom/recommended",
+    "plugin:testing-library/react"
+    // testing-library의 플러그인은 하나만 넣어주면 됩니다.
+    // "plugin:testing-library/dom"를 추가로 넣을 필요는 없습니다.
+  ]
+    
+}
