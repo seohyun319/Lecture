@@ -2,20 +2,25 @@ import { Product } from "@/types/type";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const Products: React.FC = () => {
+const useLoading = (url: string) => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
 
-  const loadProducts = async () => {
+  const loadData = async () => {
     setLoading(true);
-    const response = await axios.get<Product[]>("/api/products");
+    const response = await axios.get<Product[]>(url);
     setProducts(response.data);
     setLoading(false);
   };
-
   useEffect(() => {
-    loadProducts();
+    void loadData();
   }, []);
+
+  return [loading, products];
+};
+
+const Products: React.FC = () => {
+  const [loading, products] = useLoading("/api/products");
 
   return (
     <div>
