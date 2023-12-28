@@ -1,0 +1,33 @@
+{
+  "name": "chap3-2-skeleton-component",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.11",
+    "@mui/material": "^5.14.11",
+    "@tanstack/react-query": "^4.35.3",
+    "@types/node": "20.6.2",
+    "@types/react": "18.2.21",
+    "@types/react-dom": "18.2.7",
+    "axios": "^1.5.0",
+    "eslint": "8.49.0",
+    "eslint-config-next": "13.4.19",
+    "next": "13.4.19",
+    "react": "18.2.0",
+    "react-content-loader": "^6.2.1",
+    "react-dom": "18.2.0",
+    "react-loading-skeleton": "^3.3.1",
+    "typescript": "5.2.2"
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^4.34.1"
+  }
+}
