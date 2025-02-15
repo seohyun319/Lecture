@@ -68,7 +68,7 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
+      <ScrollView // 내부 콘텐츠 길 땐 스크롤뷰 써야 함
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <Header />
@@ -98,6 +98,7 @@ function App(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   sectionContainer: {
+    // 단위 - px 아니고 dip
     marginTop: 32,
     paddingHorizontal: 24,
   },
