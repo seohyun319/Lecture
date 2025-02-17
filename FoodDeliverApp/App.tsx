@@ -1,119 +1,82 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import * as React from 'react';
+import {NavigationContainer, ParamListBase} from '@react-navigation/native';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
+import {Text, TouchableHighlight, View} from 'react-native';
+import {useCallback} from 'react';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// params 추가 가능
+type RootStackParamList = {
+  Home: undefined;
+  Details: undefined;
+};
+type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Details'>;
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+// navigation.navigate - 이동
+// navigation.push - 쌓기
+// navigation.goBack - 이전으로 이동
+function HomeScreen({navigation}: HomeScreenProps) {
+  const onClick = useCallback(() => {
+    navigation.navigate('Details');
+  }, [navigation]);
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      {/* 버튼 역할 하는 것들: Pressable, Button, TouchableHighlight, TouchableOpacity, 
+      TouchableWithoutFeedback, TouchableNativeFeedback */}
+      {/* 운영 체제마다 다르게 나타날 수 있음. Pressable, TouchableWithoutFeedback이 무난함 */}
+      <TouchableHighlight
+        // 터치했을 때의 하이라이트 색상 설정 가능
+        // underlayColor={'orange'}
+        // 앱이라 onClick 아니고 onPress임
+        onPress={onClick}>
+        <Text>Home Screen</Text>
+      </TouchableHighlight>
     </View>
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+function DetailsScreen({navigation}: DetailsScreenProps) {
+  const onClick = useCallback(() => {
+    navigation.navigate('Home');
+  }, [navigation]);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView // 내부 콘텐츠 길 땐 스크롤뷰 써야 함
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <TouchableHighlight onPress={onClick}>
+        <Text>Details Screen</Text>
+      </TouchableHighlight>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    // 단위 - px 아니고 dip
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+function App() {
+  return (
+    // NavigationContainer - 네비게이션 상태 저장
+    // React Navigation에서 기본적으로 SafeAreaView로 감싸줌
+    <NavigationContainer>
+      {/* initialRouteName: 기본이 될 라우트 */}
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          // 페이지 제목
+          // Screen options에 함수를 넣어 route.params로 params 접근 가능
+          options={{title: 'Overview'}}
+        />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        {/* 프롭 스프레드로 넘길 땐 이 방식도 가능 */}
+        {/* <Stack.Screen name="Details">
+          {props => <DetailsScreen {...props} />}
+        </Stack.Screen> */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default App;
