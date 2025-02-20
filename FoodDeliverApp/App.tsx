@@ -15,8 +15,8 @@ type RootStackParamList = {
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Details'>;
 
-// navigation.navigate - 이동
-// navigation.push - 쌓기
+// navigation.navigate - 이동 (이전 상태 보존)
+// navigation.push - 쌓기 (화면 전환)
 // navigation.goBack - 이전으로 이동
 function HomeScreen({navigation}: HomeScreenProps) {
   const onClick = useCallback(() => {
