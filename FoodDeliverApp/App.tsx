@@ -1,80 +1,69 @@
 import * as React from 'react';
-import {NavigationContainer, ParamListBase} from '@react-navigation/native';
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
-import {Text, TouchableHighlight, View} from 'react-native';
-import {useCallback} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Settings from './src/pages/Settings';
+import Orders from './src/pages/Orders';
+import Delivery from './src/pages/Delivery';
+import {useState} from 'react';
+import SignIn from './src/pages/SignIn';
+import SignUp from './src/pages/SignUp';
 
-// params 추가 가능
-type RootStackParamList = {
-  Home: undefined;
-  Details: undefined;
+export type LoggedInParamList = {
+  Orders: undefined;
+  Settings: undefined;
+  Delivery: undefined;
+  // 파라미터 받음
+  Complete: {orderId: string};
 };
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Details'>;
 
-// navigation.navigate - 이동 (이전 상태 보존)
-// navigation.push - 쌓기 (화면 전환)
-// navigation.goBack - 이전으로 이동
-function HomeScreen({navigation}: HomeScreenProps) {
-  const onClick = useCallback(() => {
-    navigation.navigate('Details');
-  }, [navigation]);
+export type RootStackParamList = {
+  SignIn: undefined;
+  SignUp: undefined;
+};
 
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      {/* 버튼 역할 하는 것들: Pressable, Button, TouchableHighlight, TouchableOpacity, 
-      TouchableWithoutFeedback, TouchableNativeFeedback */}
-      {/* 운영 체제마다 다르게 나타날 수 있음. Pressable, TouchableWithoutFeedback이 무난함 */}
-      <TouchableHighlight
-        // 터치했을 때의 하이라이트 색상 설정 가능
-        // underlayColor={'orange'}
-        // 앱이라 onClick 아니고 onPress임
-        onPress={onClick}>
-        <Text>Home Screen</Text>
-      </TouchableHighlight>
-    </View>
-  );
-}
-
-function DetailsScreen({navigation}: DetailsScreenProps) {
-  const onClick = useCallback(() => {
-    navigation.navigate('Home');
-  }, [navigation]);
-
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <TouchableHighlight onPress={onClick}>
-        <Text>Details Screen</Text>
-      </TouchableHighlight>
-    </View>
-  );
-}
-
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App() {
+  const [isLoggedIn, setLoggedIn] = useState(false);
   return (
-    // NavigationContainer - 네비게이션 상태 저장
-    // React Navigation에서 기본적으로 SafeAreaView로 감싸줌
     <NavigationContainer>
-      {/* initialRouteName: 기본이 될 라우트 */}
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          // 페이지 제목
-          // Screen options에 함수를 넣어 route.params로 params 접근 가능
-          options={{title: 'Overview'}}
-        />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-        {/* 프롭 스프레드로 넘길 땐 이 방식도 가능 */}
-        {/* <Stack.Screen name="Details">
-          {props => <DetailsScreen {...props} />}
-        </Stack.Screen> */}
-      </Stack.Navigator>
+      {isLoggedIn ? (
+        <Tab.Navigator>
+          {/* Tab.Group은 Screen 묶어줄 수 있음. react fragment 역할 */}
+          {/* 특정 스크린간 공통 속성 있을 때도 묶어주면 됨 */}
+          {/* <Tab.Group></Tab.Group> */}
+          <Tab.Screen
+            name="Orders"
+            component={Orders}
+            options={{title: '오더 목록'}}
+          />
+          <Tab.Screen
+            name="Delivery"
+            component={Delivery}
+            options={{headerShown: false}}
+          />
+          <Tab.Screen
+            name="Settings"
+            component={Settings}
+            options={{title: '내 정보'}}
+          />
+        </Tab.Navigator>
+      ) : (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="SignIn"
+            component={SignIn}
+            options={{title: '로그인'}}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{title: '회원가입'}}
+          />
+        </Stack.Navigator>
+      )}
     </NavigationContainer>
   );
 }
