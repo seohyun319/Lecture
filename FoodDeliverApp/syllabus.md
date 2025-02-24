@@ -1,24 +1,72 @@
-# 소개
-
-현재 README는 강의안에 덧붙이거나 강의를 직접 정리한 정리본이다.
-
-참고) [강의안](./syllabus.md), [소스 코드](https://github.com/ZeroCho/food-delivery-app/tree/master)
-
 # 첫 시작(setting)
 
 [공식문서](https://reactnative.dev/)
 
-- 초기 세팅[(React Native CLI Quickstart)](https://reactnative.dev/docs/environment-setup)
-- 환경 변수 설정([macOS JAVA_HOME 세팅법](https://stackoverflow.com/a/59151321))
-- Android 13(티라미수). 가상기기는 Nexus 5
-- [adb](https://developer.android.com/studio/releases/platform-tools) 설치 필요, ANDROID_HOME 환경변수도
+- 초기 세팅(Expo말고 React Native CLI Quickstart): [반드시 따라하기](https://reactnative.dev/docs/environment-setup)
+- 시간이 흘러서 이제는 Expo가 권장됨(리뉴얼 강의에서는 Expo로 할 예정)
+- java 17 버전 설치하면 안 됨(11버전 설치할 것), JAVA_HOME 환경 변수 설정도 잘 해 놓을 것([macOS JAVA_HOME 세팅법](https://stackoverflow.com/a/59151321))
+- Android 13(티라미수)이 있어야 함. 가상기기는 Nexus 5로 받을 것
+- 터미널에 adb 입력해서 안 뜨면 [adb](https://developer.android.com/studio/releases/platform-tools) 설치 필요, ANDROID_HOME 환경변수도
+- [읽어보면 좋은 벨로퍼트님의 글](https://ridicorp.com/story/react-native-1year-review/)
+
+[RN@0.72로 할 때의 문서 링크](https://github.com/ZeroCho/food-delivery-app/blob/master/README.md)
+
+```shell
+# 프로젝트를 만들고자 하는 폴더로 이동
+npx @react-native-community/cli@0.75 init FoodDeliveryApp
+
+# 다음 말이 뜨면 y 입력
+Need to install the following packages:
+  @react-native-community/cli@14.1.1
+Ok to proceed? (y)
+
+# [ios전용]Do you want to install CocoaPods now? 뜨면 y 입력
+# [ios전용]실수로 y 안 눌러서 CocoaPods 수동설치하려면
+brew install cocoapods
+
+# [ios전용]마지막으로 pod 설치
+cd FoodDeliveryApp
+sudo chmod -R 777 node_modules/*
+cd ios && pod install
+```
+
+보통은 강의용으로 자동생성 안 좋아하는데 RN은 자동생성하지 않으면 네이티브단까지 처리하기 어려움
+
+프로젝트 폴더에서 다음 명령어로 앱 실행 가능
+
+```shell
+npm start #npm start 후 뜨는 화면에서 i나 a를 눌러 아이폰/안드로이드 실행
+```
+
+![img.png](img.png)
+터미널이 뜨면서 그 안에서 서버가 하나 뜰 것임. Metro 서버. 여기서 서버가 안 뜨고 No device 등의 에러 메시지가 뜬다면 안드로이드 에뮬레이터 실행한 채로 다시 명령어 입력할 것.
+Metro 서버에서 소스 코드를 컴파일하고 앱으로 전송해줌. 기본 8081포트.
+
+다음 에러가 뜨면서 시뮬레이터에 앱이 켜지지 않는다면 터미널 종료 후 새로 하나 띄워 npm run android를 입력하고 다시 npm start를 입력한다
+
+```
+* What went wrong:
+Error resolving plugin [id: 'com.facebook.react.settings']
+> java.io.UncheckedIOException: Could not move temporary workspace
+```
+
+메트로 서버가 꺼져있다면 터미널을 하나 더 열어
+
+```shell
+npm start
+```
+
+개발은 iOS 기준으로 하는 게 좋다(개인 경험). 그러나 강좌는 어쩔 수 없이 Windows로 한다(Windows 사용자가 많기 때문).
+
+react-native@0.75 버전, 한 달에 0.1씩 올라가는데 요즘 개발 속도가 느려져서 규칙이 깨짐. 버전 업그레이드 함부로 하지 말 것!
+
+[맥 전용]npx pod-install도 미리 한 번, iOS 라이브러리(pod) 받는 용도
 
 시작 명령어
 
-```shell
-npm start // npx react-native start
-npm run android // npx react-native run-android
-npm run ios // npx react-native run-ios
+```
+npx react-native start
+npx react-native run-android
 ```
 
 ## 폴더 구조
@@ -44,6 +92,21 @@ npm run ios // npx react-native run-ios
 - Configure Bundler로 메트로 서버 포트 변경 가능
 - Show Perf Monitor로 프레임 측정 가능
 
+[Flipper](https://fbflipper.com/) 페이스북이 만든 모바일앱 디버거도 좋음(다만 연결 시 에러나는 사람 다수 발견)
+
+- [Windows] 홈페이지에서 다운로드 시 tgz 파일이 다운로드 된다면 [링크](https://github.com/facebook/flipper/releases/tag/v0.239.0)에서 대신 Flipper-win.zip을 다운로드
+- [ios]설치 시 환경설정 -> 개인정보 및 보안 메뉴에서 Flipper를 허용해주어야 함
+- troubleshoot -> setup doctor 문제 해결할 것
+
+```shell
+npm i react-native-flipper redux-flipper rn-flipper-async-storage-advanced @react-native-async-storage/async-storage
+npx pod-install # 아이폰 전용
+```
+
+- flipper-plugin-async-storage-advanced
+- flipper-plugin-redux-debugger
+- Layout, Network, Images, Database(sqlite), React Devtools, Hermes Debugger 사용 가능
+
 ## 앱 이름 변경
 
 \android\app\src\main\res\values\strings.xml
@@ -55,6 +118,28 @@ app.json의 displayName
 **단!** 0.68버전부터는 app.json, strings.xml, CFBundleDisplayName을 한글로하면 튕기는 문제 발생. 그럴때는 전부 영어로 되돌리고
 ios에서는 [링크](https://thddudco.tistory.com/16) 따라서 다국어 설정으로 한국어 설정할 것.
 또한 안드로이드에서는 \android\app\src\main\res\values\strings.xml은 영어로 두고 \android\app\src\main\res\values-ko\strings.xml 을 새로 만들어 여기서 한글로 변경할 것
+
+android/gradle.properties
+
+```
+FLIPPER_VERSION=0.239.0
+```
+
+플리퍼 버전 추가
+
+## 리액트 네이티브 폴더 구조
+
+- src 폴더 생성(지금 바로 생성 안 하고 폴더 안에 파일이 들 때 생성해도 됨)
+- src/assets: 이미지, 폰트 등
+- src/constants: 상수
+- src/pages: 페이지 단위 컴포넌트
+- src/components: 기타 컴포넌트
+- src/contexts: context api 모음
+- src/hooks: 커스텀 훅 모음
+- src/modules: 네이티브 모듈
+- src/store: 리덕스 스토어 세팅
+- src/slices: 리덕스 슬라이스
+- types: 타입 정의
 
 # 코딩 시작!
 
@@ -99,7 +184,6 @@ import {
 import {Text, TouchableHighlight, View} from 'react-native';
 import {useCallback} from 'react';
 
-// params 추가 가능
 type RootStackParamList = {
   Home: undefined;
   Details: undefined;
@@ -107,9 +191,6 @@ type RootStackParamList = {
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Details'>;
 
-// navigation.navigate - 이동 (이전 상태 보존)
-// navigation.push - 쌓기 (화면 전환)
-// navigation.goBack - 이전으로 이동
 function HomeScreen({navigation}: HomeScreenProps) {
   const onClick = useCallback(() => {
     navigation.navigate('Details');
@@ -117,14 +198,7 @@ function HomeScreen({navigation}: HomeScreenProps) {
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      {/* 버튼 역할 하는 것들: Pressable, Button, TouchableHighlight, TouchableOpacity, 
-      TouchableWithoutFeedback, TouchableNativeFeedback */}
-      {/* 운영 체제마다 다르게 나타날 수 있음. Pressable, TouchableWithoutFeedback이 무난함 */}
-      <TouchableHighlight
-        // 터치했을 때의 하이라이트 색상 설정 가능
-        // underlayColor={'orange'}
-        // 앱이라 onClick 아니고 onPress임
-        onPress={onClick}>
+      <TouchableHighlight onPress={onClick}>
         <Text>Home Screen</Text>
       </TouchableHighlight>
     </View>
@@ -146,26 +220,18 @@ function DetailsScreen({navigation}: DetailsScreenProps) {
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
 function App() {
   return (
-    // NavigationContainer - 네비게이션 상태 저장
-    // React Navigation에서 기본적으로 SafeAreaView로 감싸줌
     <NavigationContainer>
-      {/* initialRouteName: 기본이 될 라우트 */}
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          // 페이지 제목
-          // Screen options에 함수를 넣어 route.params로 params 접근 가능
           options={{title: 'Overview'}}
         />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-        {/* 프롭 스프레드로 넘길 땐 이 방식도 가능 */}
-        {/* <Stack.Screen name="Details">
+        <Stack.Screen name="Details">
           {props => <DetailsScreen {...props} />}
-        </Stack.Screen> */}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -174,7 +240,7 @@ function App() {
 export default App;
 ```
 
-- safe-area가 적용되어 있음
+- safe-area가 적용되어 있음(설명)
 - NavigationContainer: 내비게이션 상태 저장
 - Navigator 안에 Screen들 배치
 - Screen name 대소문자 상관 없음, component는 보통 두 가지 방식 사용(컴포넌트 그 자체 vs Render Callback)
