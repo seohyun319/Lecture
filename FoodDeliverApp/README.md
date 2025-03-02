@@ -358,7 +358,7 @@ export default DismissKeyboardView;
 npm i react-native-keyboard-aware-scroll-view
 ```
 
-## 서버 요청 보내기(ch2)
+## 서버 요청 보내기(ch3)
 
 back 서버 실행 필요, DB 없이도 되게끔 만들어둠. 서버 재시작 시 데이터는 날아가니 주의
 
