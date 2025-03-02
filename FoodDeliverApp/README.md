@@ -310,27 +310,35 @@ export default App;
 src/components/DismissKeyBoardView.tsx
 
 ```typescript jsx
-import React from 'react';
+import React, {ReactNode} from 'react';
 import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleProp,
   ViewStyle,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
+// 강의에 나오는 scrollview 라이브러리는 타입스크립트 지원 안 됨😂
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-const DismissKeyboardView: React.FC<{style: StyleProp<ViewStyle>}> = ({
-  children,
-  ...props
-}) => (
+const DismissKeyboardView: React.FC<{
+  style?: StyleProp<ViewStyle>;
+  children?: ReactNode;
+}> = ({children, ...props}) => (
+  // 키보드 외의 화면을 누르면 키보드가 내려감
+  // TouchableWithoutFeedback은 버튼인데 버튼 기능은 아님.
+  // 스크린 리더기 혼란 막기 위해 accessible={false}로 버튼의 역할을 안 한다는 걸 알려줌
   <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <KeyboardAvoidingView
+    {/* <KeyboardAvoidingView
       {...props}
       style={props.style}
+      // 각 플랫폼별로 잘 먹는 속성 설정해줌
       behavior={Platform.OS === 'android' ? undefined : 'padding'}>
       {children}
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView> */}
+    {/* 그냥 라이브러리로 함 */}
+    <KeyboardAwareScrollView {...props} style={props.style}>
+      {children}
+    </KeyboardAwareScrollView>
   </TouchableWithoutFeedback>
 );
 
@@ -344,26 +352,10 @@ export default DismissKeyboardView;
 - src/components/DismissKeyboardView.tsx
 - TextInput, StyleSheet.compose 사용
 - DismissKeyboardView 만들기(Keyboard, KeyboardAvoidingView)
-- KeyboardAvoidingView는 불편함
-- react-native-keyboard-aware-scrollview를 대안으로 사용
+- KeyboardAvoidingView는 불편해 react-native-keyboard-aware-scroll-view를 대안으로 사용
 
 ```shell
-npm i react-native-keyboard-aware-scrollview
-```
-
-- 타이핑이 없으므로 직접 타입 추가해야 함
-- react-native-keyboard-aware-scroll-view 라이브러리는 타입이 있음
-
-types/react-native-keyboard-aware-scroll-view
-
-```
-
-```
-
-src/components/DismissKeyBoardView.tsx
-
-```typescript jsx
-
+npm i react-native-keyboard-aware-scroll-view
 ```
 
 ## 서버 요청 보내기(ch2)
