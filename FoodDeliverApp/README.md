@@ -372,7 +372,7 @@ npm start
 리덕스 설정
 
 ```shell
-npm i @reduxjs/toolkit react-redux redux-flipper
+npm i @reduxjs/toolkit react-redux
 ```
 
 src/store/index.ts와 src/store/reducer.ts, src/slices/user.ts 작성
@@ -400,6 +400,10 @@ function App() {
 
 export default App;
 ```
+
+- action: state를 바꾸는 행위/동작
+- dispatch: 그 액션을 실제로 실행하는 함수
+- reducer: 액션이 실제로 실행되면 state를 바꾸는 로직
 
 ## 회원가입, 로그인
 
