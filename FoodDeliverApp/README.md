@@ -414,7 +414,7 @@ npm install react-native-encrypted-storage
 npx pod-install # ios 전용
 ```
 
-서버 요청은 axios 사용(요즘 ky나 got으로 넘어가는 추세이나 react-native와 호환 여부 불투명)
+서버 요청은 axios 사용
 
 ```shell
 npm i axios
@@ -430,40 +430,12 @@ npm i react-native-config
 import Config from 'react-native-config';
 ```
 
--Android에서 Config가 적용이 안 되면 다음 추가해야함
-
-android/app/proguard-rules.pro
-
-```
--keep class com.fooddeliveryapp.BuildConfig { *; }
-```
-
-android/app/build.gradle
-
-```
-apply plugin: "com.android.application"
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-...
-android {
-    ...
-    defaultConfig {
-        ...
-        resValue "string", "build_config_package", "com.fooddeliveryapp"
-    }
-```
-
 - .env에 키=값 저장해서(예를 들어 abc=def) Config.abc로 꺼내 씀
   .env
 
 ```
 API_URL=http://10.0.2.2:3105
 ```
-
-- 안드로이드 아이피는 10.0.2.2로 해야 함(localhost로 하면 안드로이드에서 안 됨)
-- 10.0.2.2가 안 되면 네이버에 내 아이피 쳐서 외부IP도 입력해보고, ipconfig 터미널에 입력할 때 나오는 내부IP도 입력해서 되는 것 찾기
-- 에뮬레이터/시뮬레이터/실제 기기에서 브라우저를 켜서 아이피:3105 입력했을 때 페이지가 제대로 뜨는 IP가 실제로 작동하는 IP
-- [ios]에서는 127.0.0.1 IP로 쓰기
-- [ios]에서 안 될 때는 Podfile에 pod 'react-native-config', :path => '../node_modules/react-native-config/react-native-config.podspec' 추가해보기
 
 암호화해서 저장할 데이터는 다음 패키지에
 
@@ -480,19 +452,11 @@ const 값 = await EncryptedStorage.getItem('키');
 - redux에 넣은 데이터는 앱을 끄면 날아감
 - 앱을 꺼도 저장되어야 하고 민감한 값은 encrypted-storage에
 - 개발 환경별로 달라지는 값은 react-native-config에 저장하면 좋음(암호화 안 됨)
-- 그 외에 유지만 되면 데이터들은 async-storage에 저장(npm install @react-native-async-storage/async-storage)
+- 그 외에 유지만 되는 데이터들은 async-storage에 저장(npm install @react-native-async-storage/async-storage)
 
 src/pages/SignUp.tsx, src/pages/SignIn.tsx
 
-```
-
-```
-
-android에서 http 요청이 안 보내지면
-
-- android/app/src/main/AndroidManifest.xml 에서 <application> 태그에 android:usesCleartextTraffic="true" 추가
-
-ActivityIndicator로 로딩창 꾸미기
+로딩 중일 땐 ActivityIndicator를 보여줄 수 있음.
 
 ## 소켓IO 연결
 

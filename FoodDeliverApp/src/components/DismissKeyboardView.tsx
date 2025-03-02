@@ -18,17 +18,17 @@ const DismissKeyboardView: React.FC<{
   // TouchableWithoutFeedback은 버튼인데 버튼 기능은 아님.
   // 스크린 리더기 혼란 막기 위해 accessible={false}로 버튼의 역할을 안 한다는 걸 알려줌
   <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    {/* <KeyboardAvoidingView
+    <KeyboardAvoidingView
       {...props}
       style={props.style}
       // 각 플랫폼별로 잘 먹는 속성 설정해줌
       behavior={Platform.OS === 'android' ? undefined : 'padding'}>
       {children}
-    </KeyboardAvoidingView> */}
+    </KeyboardAvoidingView>
     {/* 그냥 라이브러리로 함 */}
-    <KeyboardAwareScrollView {...props} style={props.style}>
+    {/* <KeyboardAwareScrollView {...props} style={props.style}>
       {children}
-    </KeyboardAwareScrollView>
+    </KeyboardAwareScrollView> */}
   </TouchableWithoutFeedback>
 );
 
