@@ -640,8 +640,32 @@ useEffect(() => {
 
 src/pages/Settings.tsx
 
-```
+```tsx
+const money = useSelector((state: RootState) => state.user.money);
+const name = useSelector((state: RootState) => state.user.name);
 
+useEffect(() => {
+  async function getMoney() {
+    const response = await axios.get<{data: number}>(
+      `${Config.API_URL}/showmethemoney`,
+      {
+        headers: {authorization: `Bearer ${accessToken}`},
+      },
+    );
+    dispatch(userSlice.actions.setMoney(response.data.data));
+  }
+  getMoney();
+}, [accessToken, dispatch]);
+
+...
+
+<Text style={styles.moneyText}>
+  {name}님의 수익금{' '}
+  <Text style={{fontWeight: 'bold'}}>
+    {money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+  </Text>
+  원
+</Text>;
 ```
 
 ## 주문 화면 만들기(수락/거절)
