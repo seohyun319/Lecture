@@ -530,11 +530,37 @@ useEffect(() => {
 
 src/pages/Settings.tsx
 
+```tsx
+const accessToken = useSelector((state: RootState) => state.user.accessToken);
+const dispatch = useAppDispatch();
+const onLogout = useCallback(async () => {
+  try {
+    await axios.post(
+      `${Config.API_URL}/logout`,
+      {},
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    Alert.alert('알림', '로그아웃 되었습니다.');
+    dispatch(
+      userSlice.actions.setUser({
+        name: '',
+        email: '',
+        accessToken: '',
+      }),
+    );
+    await EncryptedStorage.removeItem('refreshToken');
+  } catch (error) {
+    const errorResponse = (error as AxiosError).response;
+    console.error(errorResponse);
+  }
+}, [accessToken, dispatch]);
 ```
 
-```
-
-## 실제 주문 받기[ch3]
+## 실제 주문 받기[ch4]
 
 socket.io에서 주문 내역 받아서 store에 넣기
 
