@@ -516,6 +516,7 @@ useEffect(() => {
 }, [isLoggedIn, socket]);
 
 useEffect(() => {
+  // 로그아웃하면 연결 끊어주기
   if (!isLoggedIn) {
     console.log('!isLoggedIn', !isLoggedIn);
     disconnect();
@@ -546,7 +547,9 @@ useEffect(() => {
     dispatch(orderSlice.actions.addOrder(data));
   };
   if (socket && isLoggedIn) {
+    // 주문 받겠다고 선언
     socket.emit('acceptOrder', 'hello');
+    // 서버에서 주문 전달
     socket.on('order', callback);
   }
   return () => {
