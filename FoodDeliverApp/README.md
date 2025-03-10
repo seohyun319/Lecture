@@ -586,6 +586,10 @@ useEffect(() => {
 }, [isLoggedIn, socket]);
 ```
 
+## 주문 데이터 리덕스에 저장하기
+
+[src/slices/order.ts](./src/slices/order.ts)
+
 ## 앱 다시 켤 때 자동로그인되게
 
 encrypted-storage에서 토큰 불러오기
@@ -629,14 +633,6 @@ useEffect(() => {
 ```
 
 - 잠깐 로그인 화면이 보이는 것은 SplashScreen으로 숨김
-
-## 주문 데이터 리덕스에 저장하기
-
-src/slices/order.ts
-
-```typescript
-
-```
 
 ## 수익금 확인하기
 
