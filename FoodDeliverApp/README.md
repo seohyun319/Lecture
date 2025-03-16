@@ -673,7 +673,31 @@ useEffect(() => {
 src/pages/Orders.tsx
 
 ```typescript jsx
+import React, {useCallback} from 'react';
+import {FlatList, View} from 'react-native';
+import {useSelector} from 'react-redux';
+import {RootState} from '../store/reducer';
+import {Order} from '../slices/order';
+import EachOrder from '../components/EachOrder';
 
+function Orders() {
+  const orders = useSelector((state: RootState) => state.order.orders);
+  const renderItem = useCallback(({item}: {item: Order}) => {
+    return <EachOrder item={item} />;
+  }, []);
+
+  return (
+    <View>
+      <FlatList
+        data={orders}
+        keyExtractor={item => item.orderId}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+}
+
+export default Orders;
 ```
 
 - 서버에서 내려주는 데이터일 때 내부 콘텐츠 양이 얼마나 될지 모르기 때문에 ScrollView + map 조합은 좋지 않음. FlatList 권장.
@@ -686,7 +710,17 @@ src/pages/Orders.tsx
 src/components/EachOrder.tsx
 
 ```typescript jsx
-
+const renderItem = useCallback(({item}: {item: Order}) => {
+  return (
+    <View key={item.orderId} style={styles.orderContainer}>
+      <Pressable onPress={toggleDetail} style={styles.info}>
+        <Text style={styles.eachInfo}>
+          {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+        </Text>
+      </Pressable>
+    </View>
+  );
+}, []);
 ```
 
 ## accessToken 만료시 자동으로 refresh되게
