@@ -84,7 +84,7 @@ function AppInner() {
     };
     if (socket && isLoggedIn) {
       // 주문 받겠다고 선언
-      socket.emit('acceptOrder', 'hello');
+      socket.emit('acceptOrder', 'order');
       // 서버에서 주문 전달
       socket.on('order', callback);
     }
