@@ -103,6 +103,44 @@ function AppInner() {
     }
   }, [isLoggedIn, disconnect]);
 
+  useEffect(() => {
+    axios.interceptors.response.use(
+      // onFulfilled
+      // 성공했을 때
+      response => {
+        return response;
+      },
+      // onRejected
+      // 실패했을 때
+      async error => {
+        const {
+          config,
+          response: {status},
+        } = error;
+        if (status === 419) {
+          if (error.response.data.code === 'expired') {
+            const originalRequest = config;
+            const refreshToken = await EncryptedStorage.getItem('refreshToken');
+            // token refresh 요청
+            const {data} = await axios.post(
+              `${Config.API_URL}/refreshToken`, // token refresh api
+              {},
+              {headers: {authorization: `Bearer ${refreshToken}`}},
+            );
+            // 새로운 토큰 저장
+            // 원래 리퀘스트에 새로운 헤더 저장해줌
+            dispatch(userSlice.actions.setAccessToken(data.data.accessToken));
+            originalRequest.headers.authorization = `Bearer ${data.data.accessToken}`;
+            // 419로 요청 실패했던 요청 새로운 토큰으로 재요청
+            return axios(originalRequest);
+          }
+        }
+        // 419가 아닌 케이스
+        return Promise.reject(error);
+      },
+    );
+  }, [dispatch]);
+
   return isLoggedIn ? (
     <Tab.Navigator>
       {/* Tab.Group은 Screen 묶어줄 수 있음. react fragment 역할 */}
