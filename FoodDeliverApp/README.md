@@ -676,10 +676,12 @@ src/pages/Orders.tsx
 
 ```
 
-- ScrollView + map 조합은 좋지 않음
-- FlatList를 쓰기
-- 반복되는 것은 컴포넌트로 빼는 것이 좋음
-- keyExtractor 반드시 설정하기
+- 서버에서 내려주는 데이터일 때 내부 콘텐츠 양이 얼마나 될지 모르기 때문에 ScrollView + map 조합은 좋지 않음. FlatList 권장.
+- FlatList
+  - data에 넣은 걸 반복해줌.
+  - keyExtractor 설정 필수
+  - renderItem: 렌더해줄 아이템.
+- 반복되는 것은 컴포넌트로 빼는 것이 좋음. 같은 파일 내에 넣는 것보다 다른 파일로 빼는 편이 좋음.
 
 src/components/EachOrder.tsx
 
