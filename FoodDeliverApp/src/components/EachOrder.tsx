@@ -1,4 +1,11 @@
-import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import orderSlice, {Order} from '../slices/order';
 import {useAppDispatch} from '../store';
@@ -9,6 +16,11 @@ import {RootState} from '../store/reducer';
 import Config from 'react-native-config';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {LoggedInParamList} from '../../AppInner';
+import {
+  NaverMapView,
+  NaverMapMarkerOverlay,
+  NaverMapPathOverlay,
+} from '@mj-studio/react-native-naver-map';
 
 interface Props {
   item: Order;
@@ -68,8 +80,43 @@ function EachOrder({item}: Props) {
       </Pressable>
       {detail && (
         <View>
-          <View>
-            <Text>네이버맵이 들어갈 장소</Text>
+          <View
+            style={{
+              width: Dimensions.get('window').width - 30,
+              height: 200,
+              marginTop: 10,
+            }}>
+            <NaverMapView
+              style={{width: '100%', height: '100%'}}
+              isShowZoomControls={false}
+              initialCamera={{
+                latitude: (start.latitude + end.latitude) / 2,
+                longitude: (start.longitude + end.longitude) / 2,
+                zoom: 10,
+                tilt: 50,
+              }}
+              isShowLocationButton
+              isShowCompass={false}
+              isShowScaleBar>
+              <NaverMapMarkerOverlay
+                latitude={start.latitude}
+                longitude={start.longitude}
+                tintColor="blue"
+              />
+              <NaverMapPathOverlay
+                coords={[
+                  {
+                    latitude: start.latitude,
+                    longitude: start.longitude,
+                  },
+                  {latitude: end.latitude, longitude: end.longitude},
+                ]}
+              />
+              <NaverMapMarkerOverlay
+                latitude={end.latitude}
+                longitude={end.longitude}
+              />
+            </NaverMapView>
           </View>
           <View style={styles.buttonWrapper}>
             <Pressable onPress={onAccept} style={styles.acceptButton}>
