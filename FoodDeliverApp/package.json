@@ -21,6 +21,7 @@
     "react-native-config": "^1.5.5",
     "react-native-encrypted-storage": "^4.0.3",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-permissions": "^5.2.6",
     "react-native-safe-area-context": "^5.2.0",
     "react-native-screens": "^4.6.0",
     "react-redux": "^9.2.0",

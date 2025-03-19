@@ -858,6 +858,7 @@ pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
 ios/FoodDeliveryApp/Info.plist
 
 ```
+<!-- 권한 허용 받을 때 유저에게 하는 설명 -->
 <key>NSCameraUsageDescription</key>
 <string>배송완료 사진 촬영을 위해 카메라 권한이 필요합니다.</string>
 <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

@@ -4411,6 +4411,11 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
+react-native-permissions@^5.2.6:
+  version "5.2.6"
+  resolved "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-5.2.6.tgz"
+  integrity sha512-C/tbf5UQZCAXiveDcRcyyluEt8JYnPZ9Zee2L/vJ0xmdpRAIUYWCUPNyfDEPkD8DfQhR9IqxeYxSOL+r68Cqtw==
+
 react-native-safe-area-context@^5.2.0, "react-native-safe-area-context@>= 4.0.0":
   version "5.2.0"
   resolved "https://registry.npmjs.org/react-native-safe-area-context/-/react-native-safe-area-context-5.2.0.tgz"
@@ -4424,7 +4429,7 @@ react-native-screens@^4.6.0, "react-native-screens@>= 4.0.0":
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native@*, react-native@>=0.42.0, react-native@>=0.48.4, react-native@0.77.0:
+react-native@*, react-native@>=0.42.0, react-native@>=0.48.4, react-native@>=0.70.0, react-native@0.77.0:
   version "0.77.0"
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"
@@ -4489,7 +4494,7 @@ react-test-renderer@18.3.1:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.2"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.9.0 || ^17.0.0 || ^18 || ^19", "react@^18.0 || ^19", react@^18.2.0, react@^18.3.1, "react@>= 18.2.0", react@>=16.8, react@>=17.0.0, react@18.3.1:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.9.0 || ^17.0.0 || ^18 || ^19", "react@^18.0 || ^19", react@^18.2.0, react@^18.3.1, "react@>= 18.2.0", react@>=16.8, react@>=17.0.0, react@>=18.1.0, react@18.3.1:
   version "18.3.1"
   dependencies:
     loose-envify "^1.1.0"
