@@ -995,16 +995,299 @@ npm i @react-native-community/geolocation
 
 src/pages/Ing.tsx
 
-```
+```tsx
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Text, View} from 'react-native';
+import {
+  NaverMapView,
+  NaverMapPathOverlay,
+  NaverMapMarkerOverlay,
+} from '@mj-studio/react-native-naver-map';
+import {useSelector} from 'react-redux';
+import {RootState} from '../store/reducer';
+import Geolocation from '@react-native-community/geolocation';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {LoggedInParamList} from '../../AppInner';
 
+type IngScreenProps = NativeStackScreenProps<LoggedInParamList, 'Delivery'>;
+
+function Ing({navigation}: IngScreenProps) {
+  console.dir(navigation);
+  const deliveries = useSelector((state: RootState) => state.order.deliveries);
+  const [myPosition, setMyPosition] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  useEffect(() => {
+    Geolocation.getCurrentPosition(
+      info => {
+        setMyPosition({
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+        });
+      },
+      console.error,
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+      },
+    );
+  }, []);
+
+  if (!deliveries?.[0]) {
+    return (
+      <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+        <Text>주문을 먼저 수락해주세요!</Text>
+      </View>
+    );
+  }
+
+  if (!myPosition || !myPosition.latitude) {
+    return (
+      <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+        <Text>내 위치를 로딩 중입니다. 권한을 허용했는지 확인해주세요.</Text>
+      </View>
+    );
+  }
+
+  const {start, end} = deliveries?.[0];
+
+  return (
+    <View>
+      <View
+        style={{
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height,
+        }}>
+        <NaverMapView
+          style={{height: Dimensions.get('window').height - 120}}
+          initialCamera={{
+            latitude: (start.latitude + end.latitude) / 2,
+            longitude: (start.longitude + end.longitude) / 2,
+            zoom: 10,
+            tilt: 50,
+          }}
+          isShowZoomControls
+          isShowLocationButton
+          isShowCompass={false}
+          isShowScaleBar>
+          {myPosition?.latitude && (
+            <NaverMapMarkerOverlay
+              latitude={myPosition.latitude}
+              longitude={myPosition.longitude}
+              width={100}
+              height={100}
+              anchor={{x: 0.5, y: 0.5}}
+              caption={{text: '나'}}
+              image={require('../assets/red-dot.png')}
+            />
+          )}
+          {myPosition?.latitude && (
+            <NaverMapPathOverlay
+              coords={[
+                {
+                  latitude: myPosition.latitude,
+                  longitude: myPosition.longitude,
+                },
+                {latitude: start.latitude, longitude: start.longitude},
+              ]}
+              color="orange"
+            />
+          )}
+          <NaverMapMarkerOverlay
+            latitude={start.latitude}
+            longitude={start.longitude}
+            width={15}
+            height={15}
+            globalZIndex={1000}
+            anchor={{x: 0.5, y: 0.5}}
+            caption={{text: '출발'}}
+            image={require('../assets/blue-dot.png')}
+          />
+          <NaverMapPathOverlay
+            coords={[
+              {
+                latitude: start.latitude,
+                longitude: start.longitude,
+              },
+              {latitude: end.latitude, longitude: end.longitude},
+            ]}
+            globalZIndex={1000}
+            color="orange"
+          />
+          <NaverMapMarkerOverlay
+            latitude={end.latitude}
+            longitude={end.longitude}
+            width={15}
+            globalZIndex={1000}
+            height={15}
+            anchor={{x: 0.5, y: 0.5}}
+            caption={{text: '도착'}}
+            image={require('../assets/green-dot.png')}
+            onTap={() => {
+              console.log(navigation);
+              navigation.push('Complete', {orderId: deliveries[0].orderId});
+            }}
+          />
+        </NaverMapView>
+      </View>
+    </View>
+  );
+}
+
+export default Ing;
 ```
 
 ## 이미지 선택하기(주문 완료)
 
 src/pages/Complete.tsx
 
-```
+```tsx
+import React, {useCallback, useState} from 'react';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import {LoggedInParamList} from '../../AppInner';
+import ImagePicker from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
+import axios, {AxiosError} from 'axios';
+import Config from 'react-native-config';
+import {useSelector} from 'react-redux';
+import {RootState} from '../store/reducer';
+import orderSlice from '../slices/order';
+import {useAppDispatch} from '../store';
 
+function Complete() {
+  const dispatch = useAppDispatch();
+  const route = useRoute<RouteProp<LoggedInParamList>>();
+  const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+  const [image, setImage] = useState<{
+    uri: string;
+    name: string;
+    type: string;
+  }>();
+  const [preview, setPreview] = useState<{uri: string}>();
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
+
+  const onResponse = useCallback(async response => {
+    console.log(response.width, response.height, response.exif);
+    setPreview({uri: `data:${response.mime};base64,${response.data}`});
+    const orientation = (response.exif as any)?.Orientation;
+    console.log('orientation', orientation);
+    return ImageResizer.createResizedImage(
+      response.path,
+      600,
+      600,
+      response.mime.includes('jpeg') ? 'JPEG' : 'PNG',
+      100,
+      0,
+    ).then(r => {
+      console.log(r.uri, r.name);
+
+      setImage({
+        uri: r.uri,
+        name: r.name,
+        type: response.mime,
+      });
+    });
+  }, []);
+
+  const onTakePhoto = useCallback(() => {
+    return ImagePicker.openCamera({
+      // 미리보기 표시해줌
+      includeBase64: true,
+      // 카메라 찍은 방향 정보
+      includeExif: true,
+      saveToPhotos: true,
+    })
+      .then(onResponse)
+      .catch(console.log);
+  }, [onResponse]);
+
+  const onChangeFile = useCallback(() => {
+    return ImagePicker.openPicker({
+      includeExif: true,
+      includeBase64: true,
+      mediaType: 'photo',
+    })
+      .then(onResponse)
+      .catch(console.log);
+  }, [onResponse]);
+
+  const orderId = route.params?.orderId;
+  const onComplete = useCallback(async () => {
+    if (!image) {
+      Alert.alert('알림', '파일을 업로드해주세요.');
+      return;
+    }
+    if (!orderId) {
+      Alert.alert('알림', '유효하지 않은 주문입니다.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('orderId', orderId);
+    try {
+      await axios.post(`${Config.API_URL}/complete`, formData, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+      Alert.alert('알림', '완료처리 되었습니다.');
+      navigation.goBack();
+      navigation.navigate('Settings');
+      dispatch(orderSlice.actions.rejectOrder(orderId));
+    } catch (error) {
+      const errorResponse = (error as AxiosError<{message: string}>).response;
+      if (errorResponse) {
+        Alert.alert('알림', errorResponse.data.message);
+      }
+    }
+  }, [dispatch, navigation, image, orderId, accessToken]);
+
+  return (
+    <View>
+      <View style={styles.orderId}>
+        <Text>주문번호: {orderId}</Text>
+      </View>
+      <View style={styles.preview}>
+        {preview && <Image style={styles.previewImage} source={preview} />}
+      </View>
+      <View style={styles.buttonWrapper}>
+        <Pressable style={styles.button} onPress={onTakePhoto}>
+          <Text style={styles.buttonText}>이미지 촬영</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={onChangeFile}>
+          <Text style={styles.buttonText}>이미지 선택</Text>
+        </Pressable>
+        <Pressable
+          style={
+            image
+              ? styles.button
+              : StyleSheet.compose(styles.button, styles.buttonDisabled)
+          }
+          onPress={onComplete}>
+          <Text style={styles.buttonText}>완료</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+export default Complete;
 ```
 
 이미지 선택 후 리사이징
