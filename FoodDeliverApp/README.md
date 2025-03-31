@@ -1444,7 +1444,25 @@ const initialState: InitialState = {
 src/pages/Settings.tsx
 
 ```typescript jsx
+const renderItem = useCallback(({item}: {item: Order}) => {
+  return (
+    <FastImage
+      source={{uri: `${Config.API_URL}/${item.image}`}}
+      resizeMode="contain"
+      style={{
+        height: Dimensions.get('window').width / 3,
+        width: Dimensions.get('window').width / 3,
+      }}
+    />
+  );
+}, []);
 
+<FlatList
+  data={completes}
+  numColumns={3}
+  keyExtractor={o => o.orderId}
+  renderItem={renderItem}
+/>;
 ```
 
 ## FCM[ch6]
