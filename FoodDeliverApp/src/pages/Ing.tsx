@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Text, View} from 'react-native';
+import {Alert, Dimensions, Text, View} from 'react-native';
 import {
   NaverMapView,
   NaverMapPathOverlay,
@@ -10,6 +10,7 @@ import {RootState} from '../store/reducer';
 import Geolocation from '@react-native-community/geolocation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LoggedInParamList} from '../../AppInner';
+import TMap from '../modules/TMap';
 
 type IngScreenProps = NativeStackScreenProps<LoggedInParamList, 'Delivery'>;
 
@@ -24,6 +25,7 @@ function Ing({navigation}: IngScreenProps) {
   useEffect(() => {
     Geolocation.getCurrentPosition(
       info => {
+        console.log('내 위치', info);
         setMyPosition({
           latitude: info.coords.latitude,
           longitude: info.coords.longitude,
@@ -54,7 +56,7 @@ function Ing({navigation}: IngScreenProps) {
   }
 
   const {start, end} = deliveries?.[0];
-
+  console.log('start', start, 'end', end);
   return (
     <View>
       <View
@@ -106,6 +108,19 @@ function Ing({navigation}: IngScreenProps) {
             anchor={{x: 0.5, y: 0.5}}
             caption={{text: '출발'}}
             image={require('../assets/blue-dot.png')}
+            onTap={() => {
+              TMap.openNavi(
+                '출발지',
+                start.longitude.toString(),
+                start.latitude.toString(),
+                'MOTORCYCLE',
+              ).then(data => {
+                console.log('TMap callback', data);
+                if (!data) {
+                  Alert.alert('알림', '티맵을 설치하세요.');
+                }
+              });
+            }}
           />
           <NaverMapPathOverlay
             coords={[
@@ -117,6 +132,19 @@ function Ing({navigation}: IngScreenProps) {
             ]}
             globalZIndex={1000}
             color="orange"
+            onTap={() => {
+              TMap.openNavi(
+                '도착지',
+                end.longitude.toString(),
+                end.latitude.toString(),
+                'MOTORCYCLE',
+              ).then(data => {
+                console.log('TMap callback', data);
+                if (!data) {
+                  Alert.alert('알림', '티맵을 설치하세요.');
+                }
+              });
+            }}
           />
           <NaverMapMarkerOverlay
             latitude={end.latitude}
