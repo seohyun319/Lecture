@@ -17,6 +17,7 @@ import userSlice from './src/slices/user';
 import {Alert} from 'react-native';
 import {useAppDispatch} from './src/store';
 import orderSlice from './src/slices/order';
+import SplashScreen from 'react-native-splash-screen';
 
 export type LoggedInParamList = {
   Orders: undefined;
@@ -46,6 +47,7 @@ function AppInner() {
       try {
         const token = await EncryptedStorage.getItem('refreshToken');
         if (!token) {
+          SplashScreen.hide();
           return;
         }
         const response = await axios.post(
@@ -72,6 +74,8 @@ function AppInner() {
         ) {
           Alert.alert('알림', '다시 로그인 해주세요.');
         }
+      } finally {
+        SplashScreen.hide();
       }
     };
     getTokenAndRefresh();
